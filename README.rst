@@ -1,0 +1,31 @@
+云问向量编码及搜索工具库
+------------------------
+考虑大家经常使用bert做句向量编码，并进行topk搜索，
+因此做了一个简单的库实现上述功能
+
+向量编码工具
+:::::::::::::
+**BERTSentenceEncoder** 基于bert的句子编码器，可加载bert、roberta等，
+参数都是常见的，不再赘述。
+
+**WVSentenceEncoder** 基于加权平均词向量的句子编码器，需加载gensim格式的词向量。
+
+上述两个类均实现**ISentenceEncoder**，使用方法**get_sens_vec**获取**ndarray**类型的句向量。
+
+向量搜索工具
+:::::::::::::
+**find_topk_by_vecs**
+句向量搜索函数，参数解释：
+**source_vecs**，源句向量
+**vec_db**，目标句向量数据库，**VectorDataBase**类型
+**topk**，返回前topk结果
+**metric**，度量值常用余弦和欧式
+**use_faiss**，是否用faiss加速，建议使用auto让其自动选择
+返回两个矩阵，每一个源向量的前topk的索引和距离，即两个矩阵的
+shape时len(source_vecs)*topk
+
+**find_topk_by_sens**
+是对**find_topk_by_vecs**的进一步封装，参数含义一样，不再赘述。
+返回每个原句子及其topk句子和距离。具体去看参数解释。
+
+**注意** 当前做的搜索均是精确搜索，没有粗搜(分块搜索等)。

@@ -1,0 +1,6 @@
+torch
+scipy
+scikit-learn
+numpy
+gensim
+transformers

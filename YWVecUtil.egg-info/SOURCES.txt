@@ -1,0 +1,16 @@
+README.rst
+setup.py
+YWVecUtil/__init__.py
+YWVecUtil.egg-info/PKG-INFO
+YWVecUtil.egg-info/SOURCES.txt
+YWVecUtil.egg-info/dependency_links.txt
+YWVecUtil.egg-info/requires.txt
+YWVecUtil.egg-info/top_level.txt
+YWVecUtil/SentenceEncoder/BERTSentenceEncoder.py
+YWVecUtil/SentenceEncoder/ISentenceEncoder.py
+YWVecUtil/SentenceEncoder/WVSentenceEncoder.py
+YWVecUtil/SentenceEncoder/__init__.py
+YWVecUtil/VectorDataBase/VectorDataBase.py
+YWVecUtil/VectorDataBase/__init__.py
+YWVecUtil/VectorSearch/VectorSearchUtil.py
+YWVecUtil/VectorSearch/__init__.py
