@@ -3,10 +3,10 @@
 """
 import os
 import torch
+import logging
+logging.basicConfig(level=logging.INFO)
 from sklearn.preprocessing import normalize
-from BERTSentenceEncoder import BERTSentenceEncoder  # bert 句编码器，可加载simbert
-from VectorDataBase import VectorDataBase  # 句向量数据库 可包含faiss索引
-from VectorSearchUtil import find_topk_by_sens, find_topk_by_vecs  # 搜索函数
+from YWVecUtil import BERTSentenceEncoder,VectorDataBase,find_topk_by_sens,find_topk_by_vecs
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
@@ -16,7 +16,7 @@ source_sens = ["魔幻手机第三部什么时候上映？", "抛货价什么意
 
 target_sens = ["魔幻手机第三部什么时候上映开播？", "上货价什么意思",
                "郑州割双眼皮一般需要多少钱", "去哪个网站买正品化妆品？",
-               "告诉我关于异界女神的小说", "关于异界女神的小说告诉我"]
+               "告诉我关于异界女神的小说", "关于异界女神的小说告诉我"]*100
 ### simbert 句编码器
 sen_encoder = BERTSentenceEncoder(r"D:\Codes\PretrainedModel\simbert_torch",
                                   device,

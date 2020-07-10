@@ -7,5 +7,5 @@ from typing import List, Iterable
 class ISentenceEncoder(metaclass=abc.ABCMeta):
 
     @abstractmethod
-    def get_sens_vec(self, ) -> np.ndarray:
+    def get_sens_vec(self, **kwargs) -> np.ndarray:
         pass

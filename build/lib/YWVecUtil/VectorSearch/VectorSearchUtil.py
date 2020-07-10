@@ -2,7 +2,6 @@ import scipy.spatial
 from sklearn.preprocessing import normalize
 import numpy as np
 from ..SentenceEncoder import ISentenceEncoder
-import os
 from ..VectorDataBase import VectorDataBase
 import logging
 

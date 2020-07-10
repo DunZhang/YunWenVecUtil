@@ -8,7 +8,7 @@ from typing import Iterable
 
 
 class BERTSentenceEncoder(ISentenceEncoder):
-    def __init__(self, pretrained_model_name_or_path, device, pooling_modes=["cls"], batch_size=128):
+    def __init__(self, pretrained_model_name_or_path, device, pooling_modes=["cls"], batch_size=128, max_length=128):
         """
         :param pretrained_model_name_or_path:
             see parameter in transformer.BertModel.from_pretrained
@@ -18,23 +18,27 @@ class BERTSentenceEncoder(ISentenceEncoder):
             List-like, the way of getting vector, support 'mean' 'cls' 'max'
         :param batch_size:
             batch_size
+        :param max_length:
+            max length of sentenc
 
         """
-        self.bert = BertModel.from_pretrained(pretrained_model_name_or_path=pretrained_model_name_or_path).to(device)
+        self.bert = BertModel.from_pretrained(pretrained_model_name_or_path=pretrained_model_name_or_path,
+                                              output_attentions=False, output_hidden_states=False).to(device)
         self.bert.eval()
         self.tokenizer = BertTokenizer.from_pretrained(pretrained_model_name_or_path)
         self.device = device
         self.pooling_modes = [i.strip().lower() for i in pooling_modes]
         self.batch_size = batch_size
+        self.max_length = max_length
         logging.info("vec dim:{}".format(self.bert.config.hidden_size * len(pooling_modes)))
 
     def get_sens_vec(self, sens: Iterable[str]):
         res = self.tokenizer.batch_encode_plus(batch_text_or_text_pairs=sens, pad_to_max_length=True,
-                                               return_tensors="pt")
+                                               return_tensors="pt", max_length=self.max_length)
         input_ids = res["input_ids"]
         attention_mask = res["attention_mask"]
         token_type_ids = res["token_type_ids"]
-
+        logging.info("input ids shape: {},{}".format(input_ids.shape[0], input_ids.shape[1]))
         tensor_dataset = TensorDataset(input_ids, attention_mask, token_type_ids)
         sampler = SequentialSampler(tensor_dataset)
         data_loader = DataLoader(tensor_dataset, sampler=sampler, batch_size=self.batch_size)
