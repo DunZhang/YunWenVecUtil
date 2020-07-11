@@ -3,7 +3,7 @@ import numpy as np
 from .ISentenceEncoder import ISentenceEncoder
 from typing import Iterable
 import logging
-
+logger = logging.getLogger(__name__)
 class WVSentenceEncoder(ISentenceEncoder):
     """
     weighted average vector
@@ -27,7 +27,7 @@ class WVSentenceEncoder(ISentenceEncoder):
         else:
             self.wv_model = wv_model_or_path
         self.num_dim = self.wv_model.vector_size
-        logging.info("vec dim:{}".format(self.num_dim))
+        logger.info("vec dim:{}".format(self.num_dim))
     def get_sens_vec(self, sens_words: Iterable[Iterable[str]],
                      words_weight: Iterable[Iterable[float]] = None) -> np.ndarray:
         """

@@ -4,17 +4,17 @@ import numpy as np
 from ..SentenceEncoder import ISentenceEncoder
 from ..VectorDataBase import VectorDataBase
 import logging
-
+logger = logging.getLogger(__name__)
 
 def find_topk_by_vecs(source_vecs, vec_db: VectorDataBase, topk, metric="cosine", use_faiss="auto"):
     """
     find topk vecotr
     :param source_vecs:
     :param vec_db: target vector
-    :param topk:
-    :param metric:
+    :param topk: topk result
+    :param metric: see scipy.spatial.cdist
     :param use_faiss: bool,str, True or False or "Auto"
-    :return:
+    :return: res_index and res_distance
         topk's index and instance
     """
     if isinstance(use_faiss, str) and use_faiss.lower() == "auto":
@@ -22,7 +22,7 @@ def find_topk_by_vecs(source_vecs, vec_db: VectorDataBase, topk, metric="cosine"
         try:
             import faiss
         except:
-            logging.info("faiss is not availble")
+            logger.info("faiss is not availble")
             use_faiss = False
     res_distance, res_index = None, None
     if use_faiss:
@@ -38,7 +38,7 @@ def find_topk_by_vecs(source_vecs, vec_db: VectorDataBase, topk, metric="cosine"
             if vec_db.faiss_index is not None:
                 res_distance, res_index = vec_db.faiss_index.search(source_vecs, topk)
     if res_index is None:
-        logging.info("use scipy to search")
+        logger.info("use scipy to search")
         sims = scipy.spatial.distance.cdist(source_vecs, vec_db.vector, metric)
         res_index = np.argsort(sims, axis=1)[:, 0: topk]
         res_distance = np.ones(shape=res_index.shape, dtype=np.float)
@@ -54,13 +54,12 @@ def find_topk_by_vecs(source_vecs, vec_db: VectorDataBase, topk, metric="cosine"
 def find_topk_by_sens(sen_encoder: ISentenceEncoder, source_sens, target_sens, topk,
                       metric="cosine", use_faiss="auto"):
     """
-    :param sen_encoder:
-    :param source_sens:
-    :param target_sens:
+    :param sen_encoder: ISentenceEncoder
+    :param source_sens: List-like [sen1,sen2,....]
+    :param target_sens: List-like [sen1,sen2,....]
     :param topk:
-    :param pooling_mode:
     :param metric:
-    :param use_faiss:
+    :param use_faiss: True or False or auto
     :return: [[sen,topk sens,topk sens's similarity],..]
     """
     source_vecs = sen_encoder.get_sens_vec(source_sens)

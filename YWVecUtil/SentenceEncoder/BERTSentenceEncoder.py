@@ -5,7 +5,7 @@ import torch
 from .ISentenceEncoder import ISentenceEncoder
 import logging
 from typing import Iterable
-
+logger = logging.getLogger(__name__)
 
 class BERTSentenceEncoder(ISentenceEncoder):
     def __init__(self, pretrained_model_name_or_path, device, pooling_modes=["cls"], batch_size=128, max_length=128):
@@ -19,7 +19,7 @@ class BERTSentenceEncoder(ISentenceEncoder):
         :param batch_size:
             batch_size
         :param max_length:
-            max length of sentenc
+            max length of sentence
 
         """
         self.bert = BertModel.from_pretrained(pretrained_model_name_or_path=pretrained_model_name_or_path,
@@ -30,15 +30,21 @@ class BERTSentenceEncoder(ISentenceEncoder):
         self.pooling_modes = [i.strip().lower() for i in pooling_modes]
         self.batch_size = batch_size
         self.max_length = max_length
-        logging.info("vec dim:{}".format(self.bert.config.hidden_size * len(pooling_modes)))
+        self.num_dim = self.bert.config.hidden_size * len(pooling_modes)
+        logger.info("vec dim:{}".format(self.bert.config.hidden_size * len(pooling_modes)))
 
     def get_sens_vec(self, sens: Iterable[str]):
+        """
+        get sentences vector according to pooling mode
+        :param sens: List-likem [sen1,sen2,sen3,...]
+        :return: ndarray:len(sens) * (hidden_size*len(pooling_modes))
+        """
         res = self.tokenizer.batch_encode_plus(batch_text_or_text_pairs=sens, pad_to_max_length=True,
                                                return_tensors="pt", max_length=self.max_length)
         input_ids = res["input_ids"]
         attention_mask = res["attention_mask"]
         token_type_ids = res["token_type_ids"]
-        logging.info("input ids shape: {},{}".format(input_ids.shape[0], input_ids.shape[1]))
+        logger.info("input ids shape: {},{}".format(input_ids.shape[0], input_ids.shape[1]))
         tensor_dataset = TensorDataset(input_ids, attention_mask, token_type_ids)
         sampler = SequentialSampler(tensor_dataset)
         data_loader = DataLoader(tensor_dataset, sampler=sampler, batch_size=self.batch_size)
@@ -46,7 +52,7 @@ class BERTSentenceEncoder(ISentenceEncoder):
         all_sen_vec = []
         with torch.no_grad():
             for idx, batch_data in enumerate(data_loader):
-                logging.info("get sentences vector: {}/{}".format(idx + 1, len(data_loader)))
+                logger.info("get sentences vector: {}/{}".format(idx + 1, len(data_loader)))
                 batch_data = [i.to(self.device) for i in batch_data]
                 token_embeddings, pooler_output = self.bert(input_ids=batch_data[0], attention_mask=batch_data[1],
                                                             token_type_ids=batch_data[2])

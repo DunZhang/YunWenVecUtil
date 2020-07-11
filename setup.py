@@ -2,13 +2,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='YWVecUtil',
-    version="1.0.1",
+    version="1.0.3",
     description=('YunWen vector encoder and utils'),
     long_description=open('README.rst', encoding="utf8").read(),
     author='ZhangDun',
-    author_email='dunnzhang0@gmail.com',
+    author_email='dzhang@iyunwen.com',
     maintainer='ZhangDun',
-    maintainer_email='dunnzhang0@gmail.com',
+    maintainer_email='dzhang@iyunwen.com',
     license='MIT',
     packages=find_packages(),
     url='',

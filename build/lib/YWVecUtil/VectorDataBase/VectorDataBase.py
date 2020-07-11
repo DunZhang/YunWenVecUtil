@@ -1,6 +1,6 @@
 import numpy as np
 import logging
-
+logger = logging.getLogger(__name__)
 
 class VectorDataBase():
     def __init__(self, vector: np.ndarray):
@@ -16,13 +16,13 @@ class VectorDataBase():
         try:
             import faiss
         except:
-            logging.info("no faiss in system")
+            logger.info("no faiss in system")
             return
-        logging.info("build faiss index...")
+        logger.info("build faiss index...")
         if index_type == "IP":
             self.faiss_index = faiss.IndexFlatIP(self.vector.shape[1])
             self.faiss_index.add(self.vector)
         elif index_type == "L2":
             self.faiss_index = faiss.IndexFlatL2(self.vector.shape[1])
             self.faiss_index.add(self.vector)
-        logging.info("finish building faiss index")
+        logger.info("finish building faiss index")

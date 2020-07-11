@@ -5,8 +5,8 @@
 
 向量编码工具
 :::::::::::::
-**BERTSentenceEncoder** 基于bert的句子编码器，可加载bert、roberta等，
-参数都是常见的，不再赘述。
+**BERTSentenceEncoder** 基于bert的句子编码器，可加载bert、roberta、simbert等，
+参数都是常见的，具体点进去看API，不再赘述。
 
 **WVSentenceEncoder** 基于加权平均词向量的句子编码器，需加载gensim格式的词向量。
 
